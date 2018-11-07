@@ -126,7 +126,7 @@ struct Worker {
 void* stat_thread_function(void* arg) {
 	Stat currStat = *( (Stat*) arg);
 	mutex statLock;
-	cout << "Hi, I am a stat " << currStat.name << endl;
+	//cout << "Hi, I am a stat " << currStat.name << endl;
 	unique_lock<mutex> condLock(statLock);
 	while ( currStat.workersAlive->get() > 0 || currStat.buff->size() > 0 ) {
     if ( currStat.buff->size() > 0 ) {
@@ -150,7 +150,7 @@ void* request_thread_function(void* arg) {
 	Requester currentRequester = *( (Requester*) arg);
 	unique_lock<mutex> condLock(*currentRequester.requestLock);
 	string request = "data " + currentRequester.name;
-	cout << currentRequester.name << " is making their " <<  currentRequester.requestCount << " requests" << endl;
+	//cout << currentRequester.name << " is making their " <<  currentRequester.requestCount << " requests" << endl;
 
 	for(int i = 0; i < currentRequester.requestCount; i++) {
 		while ( currentRequester.safeBuff->size() > currentRequester.requestLimit ) {
@@ -162,7 +162,7 @@ void* request_thread_function(void* arg) {
 
 
 	 currentRequester.requestersAlive->decrement();
-	 cout << currentRequester.name << " done. Alive:  " << currentRequester.requestersAlive->get() << endl;
+	 //cout << currentRequester.name << " done. Alive:  " << currentRequester.requestersAlive->get() << endl;
 	 return 0;
 
 }
@@ -172,8 +172,8 @@ void* worker_thread_function(void* arg) {
 	mutex workerLock;
 	int startRequests = currentWorker.safeBuff->size();
 	int workUpdate = startRequests;
-	cout << "Worker " << currentWorker.id << " is helping with remaining " << startRequests << " requests " << endl;
-	cout << "There are " << currentWorker.requestersAlive->get() << " requesters alive " << endl;
+	//cout << "Worker " << currentWorker.id << " is helping with remaining " << startRequests << " requests " << endl;
+	//cout << "There are " << currentWorker.requestersAlive->get() << " requesters alive " << endl;
 	unique_lock<mutex> condLock(workerLock);
 
 
@@ -201,7 +201,7 @@ void* worker_thread_function(void* arg) {
 
 	currentWorker.workersAlive->decrement();
 	currentWorker.workerWaitCond->notify_one();
-	cout << "Workers Alive " << currentWorker.workersAlive->get() << " requests left : " << currentWorker.safeBuff->size() << endl << endl;
+	//cout << "Workers Alive " << currentWorker.workersAlive->get() << " requests left : " << currentWorker.safeBuff->size() << endl << endl;
 	// for ( int i = 0; i < currentWorker.statsVector->size(); i++ ) {
 	// 	currentWorker.statsVector->at(i).statCond->notify_one();
 	// }
@@ -232,9 +232,9 @@ int main(int argc, char * argv[]) {
             case 'w':
                 workerCount = atoi(optarg); //This won't do a whole lot until you fill in the worker thread function
                 break;
-						case 'b':
-							requestLimit = atoi(optarg);
-							break;
+		case 'b':
+			requestLimit = atoi(optarg);
+			break;
 			}
     }
 
